@@ -27,14 +27,14 @@ const HomePage = () => {
   };
 
   return (
-    <div className="flex h-screen">
+    <div className="flex">
       {/* Sidebar */}
       <div className={`${isSidebarOpen ? "block" : "hidden"}`}>
-        <Sidebar isOpen={isSidebarOpen} />
+        <Sidebar isOpen={isSidebarOpen} currentPage="modules" />
       </div>
       
       {/* Main Content */}
-      <div className="flex-1">
+      <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'ml-20'} transition-all duration-300`}>
         <Header toggleSidebar={toggleSidebar} />
 
         {/* Asıl içerik */}
