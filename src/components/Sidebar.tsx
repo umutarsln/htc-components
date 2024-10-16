@@ -2,19 +2,20 @@
 import { useState, useEffect, useRef } from "react";
 import { FiChevronDown, FiChevronRight, FiSearch } from "react-icons/fi";
 import Image from "next/image";
-import { IconContext } from "react-icons";
+import Link from 'next/link';
 
 // SidebarItem bileşeni için prop tiplerini güncelleyelim
 interface SidebarItemProps {
   title: string;
   dropdown: boolean;
-  items?: string[];
+  items?: { title: string; href: string }[]; // string[] yerine obje dizisi
   icon: string;
   isActive: boolean;
   isCurrentPage: boolean;
   onClick: () => void;
   iconColor?: string;
   iconSize?: string;
+  href: string;
 }
 
 const SidebarItem: React.FC<SidebarItemProps> = ({ 
@@ -26,38 +27,42 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
   isCurrentPage, 
   onClick, 
   iconColor = 'text-gray-500',
+  href,
 }) => {
   return (
     <div>
-      <div
-        onClick={onClick}
-        className={`flex justify-between items-center cursor-pointer p-2 rounded-lg transition-all duration-300 ${
-          isCurrentPage ? 'bg-gray-200 text-gray-700 shadow-lg' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200 hover:shadow-lg'
-        }`}
-      >
-        <div className="flex items-center space-x-2">
-          <div 
-            className={`w-4 h-4 bg-current mask-icon ${isCurrentPage ? 'text-gray-800' : 'text-gray-500'}`}
-            style={{ maskImage: `url(${icon})`, WebkitMaskImage: `url(${icon})` }}
-          />
-          <span className={isCurrentPage ? 'font-medium' : ''}>{title}</span>
+      <Link href={href} passHref>
+        <div
+          onClick={onClick}
+          className={`flex justify-between items-center cursor-pointer p-2 rounded-lg transition-all duration-300 ${
+            isCurrentPage ? 'bg-gray-200 text-gray-700 shadow-lg' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200 hover:shadow-lg'
+          }`}
+        >
+          <div className="flex items-center space-x-2">
+            <div 
+              className={`w-4 h-4 bg-current mask-icon ${isCurrentPage ? 'text-gray-800' : 'text-gray-500'}`}
+              style={{ maskImage: `url(${icon})`, WebkitMaskImage: `url(${icon})` }}
+            />
+            <span className={isCurrentPage ? 'font-medium' : ''}>{title}</span>
+          </div>
+          {dropdown ? (
+            isActive ? (
+              <FiChevronDown className="ml-2" />
+            ) : (
+              <FiChevronRight className="ml-2" />
+            )
+          ) : null}
         </div>
-        {dropdown ? (
-          isActive ? (
-            <FiChevronDown className="ml-2" />
-          ) : (
-            <FiChevronRight className="ml-2" />
-          )
-        ) : null}
-      </div>
+      </Link>
       {isActive && dropdown && items && items.length > 0 && (
         <ul className="pl-4">
-          {items.map((item: string, index: number) => (
-            <li
-              key={index}
-              className="p-1 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg hover:opacity-100"
-            >
-              {item}
+          {items.map((item, index) => (
+            <li key={index}>
+              <Link href={item.href} passHref>
+                <div className="p-1 text-gray-500 hover:text-black hover:bg-gray-100 rounded-lg cursor-pointer transition-all duration-300 hover:shadow-lg hover:opacity-100">
+                  {item.title}
+                </div>
+              </Link>
             </li>
           ))}
         </ul>
@@ -80,21 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
   const [branches] = useState<string[]>(["Aktif", "Lara Şubesi", "Side Şubesi"]);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsCompanyOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
   const handleItemClick = (index: number) => {
-    // Eğer aynı item tekrar tıklanmışsa, kapatıyoruz.
     setActiveIndex(activeIndex === index ? null : index);
   };
 
@@ -190,74 +181,91 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
             title="Dashboard"
             dropdown={false}
             icon="/Vectordashboard.svg"
-            iconSize="w-5 h-5"
             isActive={activeIndex === 0}
             isCurrentPage={currentPage === 'dashboard'}
             onClick={() => handleItemClick(0)}
             iconColor={currentPage === 'dashboard' ? 'text-black' : 'text-gray-800'}
+            href="/dashboard"
           />
           <SidebarItem
             title="Group Analysis"
-            dropdown={true}
-            items={["Analysis 1", "Analysis 2"]}
+            dropdown={false}
             icon="/Vectorgroup.svg"
             isActive={activeIndex === 1}
             isCurrentPage={currentPage === 'group-analysis'}
             onClick={() => handleItemClick(1)}
+            href="/group-analysis"
           />
           <SidebarItem
             title="Guest Relations"
-            dropdown={true}
-            items={["Guest 1", "Guest 2"]}
+            dropdown={false}
             icon="/Vectorguest.svg"
+            iconSize="w-4 h-5"
             isActive={activeIndex === 2}
             isCurrentPage={currentPage === 'guest-relations'}
             onClick={() => handleItemClick(2)}
+            href="/guest-relations"
           />
           <SidebarItem
             title="Settings"
             dropdown={true}
-            items={["Profile", "Account Settings"]}
+            items={[
+              { title: "Profile", href: "/settings/profile" },
+              { title: "Account Settings", href: "/settings/account-settings" }
+            ]}
             icon="/Vectorsettings.svg"
             isActive={activeIndex === 3}
             isCurrentPage={currentPage === 'settings'}
             onClick={() => handleItemClick(3)}
+            href="/settings"
           />
           <SidebarItem
             title="Reports"
-            dropdown={true}
-            items={["Report 1", "Report 2"]}
+            dropdown={false}
             icon="/Vectorreports.svg"
             isActive={activeIndex === 4}
             isCurrentPage={currentPage === 'reports'}
             onClick={() => handleItemClick(4)}
+            href="/reports"
           />
           <SidebarItem
             title="Integrations"
             dropdown={true}
-            items={["Integration 1", "Integration 2"]}
+            items={[
+              { title: "Integration 1", href: "/integrations/integration1" },
+              { title: "Integration 2", href: "/integrations/integration2" }
+            ]}
             icon="/Vectorintegrations.svg"
             isActive={activeIndex === 5}
             isCurrentPage={currentPage === 'integrations'}
             onClick={() => handleItemClick(5)}
+            href="/integrations"
           />
           <SidebarItem
             title="Log"
             dropdown={true}
-            items={["Log 1", "Log 2"]}
+            items={[
+              { title: "Log 1", href: "/log/log1" },
+              { title: "Log 2", href: "/log/log2" }
+            ]}
             icon="/Vectorlog.svg"
             isActive={activeIndex === 6}
             isCurrentPage={currentPage === 'log'}
             onClick={() => handleItemClick(6)}
+            href="/log"
           />
           <SidebarItem
             title="Modules"
             dropdown={true}
-            items={["Module 1", "Module 2"]}
+            items={[
+              { title: "Module 1", href: "/modules/module1" },
+              { title: "Module 2", href: "/modules/module2" }
+            ]}
             icon="/Vectormodules.svg"
             isActive={activeIndex === 7}
             isCurrentPage={currentPage === 'modules'}
             onClick={() => handleItemClick(7)}
+            href="/modules"
           />
         </ul>
       </div>
