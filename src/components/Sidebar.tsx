@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FiChevronDown, FiChevronRight, FiSearch } from "react-icons/fi";
 import Image from "next/image";
 import { IconContext } from "react-icons";
@@ -75,11 +75,32 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
   // Sadece bir item'in açık kalması için activeIndex kullanıyoruz
   const [activeIndex, setActiveIndex] = useState<number | null>(null); 
-  const [isCompanyOpen, setIsCompanyOpen] = useState(false); // For company dropdown
+  const [isCompanyOpen, setIsCompanyOpen] = useState(false);
+  const [selectedBranch, setSelectedBranch] = useState("Aktif");
+  const [branches] = useState<string[]>(["Aktif", "Lara Şubesi", "Side Şubesi"]);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsCompanyOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const handleItemClick = (index: number) => {
     // Eğer aynı item tekrar tıklanmışsa, kapatıyoruz.
     setActiveIndex(activeIndex === index ? null : index);
+  };
+
+  const handleBranchSelect = (branch: string) => {
+    setSelectedBranch(branch);
+    setIsCompanyOpen(false);
   };
 
   return (
@@ -101,7 +122,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
         </div>
 
         {/* Company Section */}
-        <div className="mb-4">
+        <div className="mb-4 relative" ref={dropdownRef}>
           <div
             onClick={() => setIsCompanyOpen(!isCompanyOpen)}
             className="flex justify-between items-center cursor-pointer p-2 rounded-lg transition-colors duration-300 text-gray-500 hover:text-black hover:bg-gray-200 hover:shadow-lg hover:opacity-100"
@@ -114,9 +135,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
                 height={isOpen ? 24 : 16}
               />
               {isOpen && (
-                <div>
-                  <h2 className="font-semibold">MSE General</h2>
-                  <p className="text-sm text-gray-400">Seçili Şube: Aktif</p>
+                <div className="w-32 overflow-hidden">
+                  <h2 className="font-semibold truncate">MSE General</h2>
+                  <p className="text-sm text-gray-400 truncate">Seçili Şube: {selectedBranch}</p>
                 </div>
               )}
             </div>
@@ -130,6 +151,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
               </div>
             )}
           </div>
+          {isCompanyOpen && isOpen && (
+            <div className="absolute top-full left-0 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-10">
+              {branches.map((branch, index) => (
+                <div
+                  key={index}
+                  onClick={() => handleBranchSelect(branch)}
+                  className={`p-2 cursor-pointer transition-colors duration-300 ${
+                    selectedBranch === branch ? 'bg-gray-200 text-black' : 'text-gray-500 hover:bg-gray-100 hover:text-black'
+                  }`}
+                >
+                  {branch}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Search Section */}
@@ -165,7 +201,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
             dropdown={true}
             items={["Analysis 1", "Analysis 2"]}
             icon="/Vectorgroup.svg"
-            iconSize="w-5 h-5"
             isActive={activeIndex === 1}
             isCurrentPage={currentPage === 'group-analysis'}
             onClick={() => handleItemClick(1)}
@@ -189,37 +224,46 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
             onClick={() => handleItemClick(3)}
           />
           <SidebarItem
+            title="Reports"
+            dropdown={true}
+            items={["Report 1", "Report 2"]}
+            icon="/Vectorreports.svg"
+            isActive={activeIndex === 4}
+            isCurrentPage={currentPage === 'reports'}
+            onClick={() => handleItemClick(4)}
+          />
+          <SidebarItem
             title="Integrations"
             dropdown={true}
             items={["Integration 1", "Integration 2"]}
             icon="/Vectorintegrations.svg"
-            isActive={activeIndex === 4}
+            isActive={activeIndex === 5}
             isCurrentPage={currentPage === 'integrations'}
-            onClick={() => handleItemClick(4)}
+            onClick={() => handleItemClick(5)}
           />
           <SidebarItem
             title="Log"
             dropdown={true}
             items={["Log 1", "Log 2"]}
             icon="/Vectorlog.svg"
-            isActive={activeIndex === 5}
+            isActive={activeIndex === 6}
             isCurrentPage={currentPage === 'log'}
-            onClick={() => handleItemClick(5)}
+            onClick={() => handleItemClick(6)}
           />
           <SidebarItem
             title="Modules"
             dropdown={true}
             items={["Module 1", "Module 2"]}
             icon="/Vectormodules.svg"
-            isActive={activeIndex === 6}
+            isActive={activeIndex === 7}
             isCurrentPage={currentPage === 'modules'}
-            onClick={() => handleItemClick(6)}
+            onClick={() => handleItemClick(7)}
           />
         </ul>
       </div>
 
       {/* Footer kısmı */}
-      <div className="p-4 border-t border-gray-200">
+      <div className="p-4 border-gray-200">
         {/* Support, English, Version */}
         <div className="mb-4 space-y-2">
           <div className="flex items-center space-x-2 text-gray-500 hover:text-black hover:bg-gray-200 hover:shadow-lg hover:opacity-100 transition-all duration-300 cursor-pointer border border-transparent rounded-lg p-2">
@@ -237,7 +281,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, currentPage }) => {
         </div>
 
         {/* Kullanıcı Profili Kısmı */}
-        <div className="flex items-center space-x-2">
+        <div className="flex border-t items-center space-x-2">
           <img src="/profil.svg" alt="Profile Icon" className="w-6 h-6" />
           {isOpen && (
             <div>
