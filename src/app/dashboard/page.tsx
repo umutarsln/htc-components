@@ -41,9 +41,15 @@ const HomePage = () => {
       <div>
         <CurrentLogsTable />
       </div>
-      <div className="flex flex-wrap space-x-4">
-        <GuestTrafficChart />
-        <GuestMonitoring />
+      
+      {/* GuestTrafficChart ve GuestMonitoring'i düzenliyoruz */}
+      <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mt-4">
+        <div className="w-full lg:w-2/3">
+          <GuestTrafficChart />
+        </div>
+        <div className="w-full lg:w-1/3">
+          <GuestMonitoring />
+        </div>
       </div>
     </div>
   );
