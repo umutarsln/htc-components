@@ -8,6 +8,7 @@ import ConnectionTable from "@/components/ConnectionTable";
 import CurrentLogsTable from "@/components/CurrentLogsTable";
 import GuestTrafficChart from "@/components/GuestTrafficChart";
 import GuestMonitoring from "@/components/GuestMonitoring";
+import PackageDetailsBottom from "@/components/PackageDetailsBottom";
 
 const HomePage = () => {
   const [memoryUsage, setMemoryUsage] = useState(65);
@@ -50,6 +51,9 @@ const HomePage = () => {
         <div className="w-full lg:w-1/3">
           <GuestMonitoring />
         </div>
+      </div>
+      <div>
+        <PackageDetailsBottom />
       </div>
     </div>
   );
