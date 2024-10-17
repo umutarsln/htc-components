@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement } from 'chart.js';
+import { Chart as ChartJS, LineElement, CategoryScale, LinearScale, PointElement, ChartOptions } from 'chart.js';
 import { FaDownload, FaUpload, FaMicrochip, FaMemory } from 'react-icons/fa';
 import { IoMdArrowDropup } from 'react-icons/io';
 
@@ -110,15 +110,20 @@ const GuestTrafficChart = () => {
     return (sum / data.length).toFixed(1);
   };
 
-  const options = {
+  const options: ChartOptions<'line'> = {
     responsive: true,
     plugins: {
       legend: {
         display: true,
-        position: 'top',
+        position: 'top' as const,
+        align: 'end' as const,
         labels: {
           usePointStyle: true,
+          padding: 25,
         },
+      },
+      title: {
+        display: false,
       },
     },
     scales: {
@@ -135,8 +140,8 @@ const GuestTrafficChart = () => {
   };
 
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col md:flex-row items-center md:justify-between border border-gray-200">
-      <div className="w-full md:w-3/4">
+    <div className="bg-white p-4 rounded-lg shadow-md flex flex-col lg:flex-row items-start lg:items-center lg:justify-between border border-gray-200 h-full">
+      <div className="w-full lg:w-4/5 mb-2 lg:mb-0">
         <div className="flex items-center mb-4">
           <h2 className="text-lg font-semibold px-2">Guest Traffic</h2>
           <select
@@ -149,13 +154,15 @@ const GuestTrafficChart = () => {
             <option value="60 min">60 min</option>
           </select>
         </div>
-        <Line data={getData()} options={options} />
+        <div className="w-full h-80">
+          <Line data={getData()} options={options} />
+        </div>
       </div>
-      <div className="w-full md:w-1/4 flex flex-col space-y-4 mt-4 md:mt-0">
-        <InfoCard icon={<FaDownload />} label="Download" value={`${getAverage(getData().datasets[0].data as number[])} mbps`} percentage="9.2%" />
-        <InfoCard icon={<FaUpload />} label="Upload" value={`${getAverage(getData().datasets[1].data as number[])} mbps`} percentage="9.2%" />
-        <InfoCard icon={<FaMicrochip />} label="Processor" value="63.3 mbps" percentage="9.2%" />
-        <InfoCard icon={<FaMemory />} label="Memory" value="63.3 mbps" percentage="9.2%" />
+      <div className="w-full lg:w-2/5 flex flex-col space-y-4">
+        <InfoCard icon={<FaDownload />} label="İndirme" value={`${getAverage(getData().datasets[0].data as number[])}`} percentage="9.2%" />
+        <InfoCard icon={<FaUpload />} label="Yükleme" value={`${getAverage(getData().datasets[1].data as number[])}`} percentage="9.2%" />
+        <InfoCard icon={<FaMicrochip />} label="İşlemci" value="63.3" percentage="9.2%" />
+        <InfoCard icon={<FaMemory />} label="Bellek" value="63.3" percentage="9.2%" />
       </div>
     </div>
   );
@@ -172,17 +179,17 @@ const InfoCard = ({
   value: string;
   percentage: string;
 }) => (
-  <div className="flex items-center justify-between bg-gray-50 border border-gray-200 p-3 rounded-md">
+  <div className="flex items-center justify-between py-2 pl-3">
     <div className="flex items-center space-x-2">
-      <div className="text-xl text-gray-500">{icon}</div>
+      <div className="text-xl text-gray-500 border border-gray-200 p-2 rounded-md">{icon}</div>
       <div className="flex flex-col">
         <span className="text-sm text-gray-500">{label}</span>
-        <span className="text-lg font-semibold">{value}</span>
+        <span className="text-lg text-gray-600 font-semibold">{value}<span className='text-sm text-gray-400 font-normal'>mbps</span></span>
       </div>
     </div>
     <div className="flex items-center text-green-500">
       <IoMdArrowDropup size={24} />
-      <span>{percentage}</span>
+      <span className='text-sm text-gray-600'>{percentage}</span>
     </div>
   </div>
 );
