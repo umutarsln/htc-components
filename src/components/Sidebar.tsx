@@ -34,7 +34,7 @@ const SidebarItem: React.FC<SidebarItemProps> = ({
       <Link href={href} passHref>
         <div
           onClick={onClick}
-          className={`flex justify-between items-center cursor-pointer p-2 rounded-lg transition-all duration-300 ${
+          className={`flex  justify-between items-center cursor-pointer p-1 md:p-2 lg:p-3 rounded-lg transition-all duration-300 ${
             isCurrentPage ? 'bg-gray-200 text-gray-700 shadow-lg' : 'text-gray-500 hover:text-gray-800 hover:bg-gray-200 hover:shadow-lg'
           }`}
         >
