@@ -1,7 +1,7 @@
 "use client";
 import { useState, useRef, AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartType } from "chart.js";
 import { FiPieChart } from "react-icons/fi";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
@@ -99,7 +99,7 @@ const getOptions = (activeTab: string) => ({
       titleColor: "#ffffff",
       titleFont: {
         size: 14,
-        weight: "bold",
+        weight: "bold" as const,
       },
       bodyColor: "#ffffff",
       bodyFont: {
@@ -149,7 +149,7 @@ type TabType = keyof HiddenStates;
 
 export default function Dashboard() {
   const [activeTab, setActiveTab] = useState<TabType>("age");
-  const chartRef = useRef(null);
+  const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
   const [hiddenStates, setHiddenStates] = useState<HiddenStates>({
     age: Array(ageValues.length).fill(false),
     devices: Array(devicesValues.length).fill(false),
@@ -160,15 +160,24 @@ export default function Dashboard() {
     if (chartRef.current) {
       const chart = chartRef.current;
       const meta = chart.getDatasetMeta(0);
-      meta.data[index].hidden = !meta.data[index].hidden;
-      chart.update();
+      
+      // Görünürlük durumunu state'den kontrol edelim
+      const isCurrentlyHidden = hiddenStates[activeTab][index];
+      
+      // Veriyi gizle/göster
+      if (meta.data[index]) {
+        meta.data[index].hidden = !isCurrentlyHidden;
+        chart.update();
+      }
+      
+      // State'i güncelle
+      setHiddenStates(prev => ({
+        ...prev,
+        [activeTab]: prev[activeTab].map((hidden, i) => 
+          i === index ? !hidden : hidden
+        )
+      }));
     }
-    setHiddenStates(prev => ({
-      ...prev,
-      [activeTab]: prev[activeTab].map((hidden, i) => 
-        i === index ? !hidden : hidden
-      )
-    }));
   };
 
   const renderChartData = () => {

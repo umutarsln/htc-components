@@ -3,8 +3,10 @@ import { FaArrowUp, FaArrowDown } from "react-icons/fa";
 import { useState } from "react";
 import { FiShoppingBag, FiUsers, FiUserCheck, FiUser } from "react-icons/fi"; 
 
+type RangeKey = "Total" | "Today" | "Last Week" | "Last Month";
+
 const UserStats = () => {
-  const [selectedRange, setSelectedRange] = useState("Total");
+  const [selectedRange, setSelectedRange] = useState<RangeKey>("Total");
 
   const stats = [
     {
@@ -68,7 +70,7 @@ const UserStats = () => {
                   ? "bg-gray-200 text-black font-semibold"
                   : "text-gray-500 hover:bg-gray-100"
               } rounded-lg border border-gray-300 transition-colors duration-200`}
-              onClick={() => setSelectedRange(range)} // Seçilen aralığa göre güncelle
+              onClick={() => setSelectedRange(range as RangeKey)} // String'i RangeKey tipine dönüştürüyoruz
             >
               {range}
             </button>
