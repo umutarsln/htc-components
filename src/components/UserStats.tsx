@@ -59,11 +59,11 @@ const UserStats = () => {
     <div className="py-2">
       {/* Date Range Selection */}
       <div className="flex flex-wrap justify-between items-center mb-4">
-        <div className="flex flex-wrap space-x-4">
+        <div className="flex flex-wrap">
           {ranges.map((range) => (
             <button
               key={range}
-              className={`py-2 px-4 mb-2 sm:mb-0 ${
+              className={`py-2 px-4 ${
                 selectedRange === range
                   ? "bg-gray-200 text-black font-semibold"
                   : "text-gray-500 hover:bg-gray-100"
