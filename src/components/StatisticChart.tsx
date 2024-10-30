@@ -1,33 +1,34 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, AwaitedReactNode, JSXElementConstructor, ReactElement, ReactNode, ReactPortal } from "react";
 import { Doughnut } from "react-chartjs-2";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, ChartType } from "chart.js";
+import { FiPieChart } from "react-icons/fi";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 // Farklı sekmelere ait veriler (Age Data)
-const data1 = 8040;
-const data2 = 7560;
-const data3 = 9200;
-const data4 = 6830;
-const data5 = 8250;
-const data6 = 9100;
-const data7 = 7700;
-const data8 = 8650;
+const data1 = 124;
+const data2 = 200;
+const data3 = 273;
+const data4 = 368;
+const data5 = 546;
+const data6 = 453;
+const data7 = 122;
+const data8 = 89;
 
 // Devices Data
-const mobileData = 6400;
-const desktopData = 5600;
-const tabletData = 2800;
+const mobileData = 640;
+const desktopData = 560;
+const tabletData = 280;
 
 // Browser Data
-const chromeData = 7200;
-const firefoxData = 3100;
-const safariData = 2200;
-const edgeData = 1700;
+const chromeData = 720;
+const firefoxData = 310;
+const safariData = 220;
+const edgeData = 170;
 
 // Dinamik renk hesaplama fonksiyonu
-const getColorByValue = (value, minValue, maxValue) => {
+const getColorByValue = (value: number, minValue: number, maxValue: number) => {
   const lightness = 90 - ((value - minValue) / (maxValue - minValue)) * 60; // Açık tonlardan koyuya
   return `hsl(220, 90%, ${lightness}%)`; // Mavi tonları (hue 220) için HSL formatında
 };
@@ -38,16 +39,7 @@ const ageMinValue = Math.min(...ageValues);
 const ageMaxValue = Math.max(...ageValues);
 
 const ageData = {
-  labels: [
-    `0-12 age (${data1})`,
-    `13-17 age (${data2})`,
-    `18-24 age (${data3})`,
-    `25-34 age (${data4})`,
-    `35-44 age (${data5})`,
-    `45-54 age (${data6})`,
-    `55-64 age (${data7})`,
-    `+64 age (${data8})`,
-  ],
+  labels: [], // Etiketleri boş bir dizi olarak ayarlıyoruz
   datasets: [
     {
       label: "Age Statistic",
@@ -66,11 +58,7 @@ const devicesMinValue = Math.min(...devicesValues);
 const devicesMaxValue = Math.max(...devicesValues);
 
 const devicesData = {
-  labels: [
-    `Mobile (${mobileData})`,
-    `Desktop (${desktopData})`,
-    `Tablet (${tabletData})`,
-  ],
+  labels: [],
   datasets: [
     {
       label: "Devices Statistic",
@@ -89,12 +77,7 @@ const browserMinValue = Math.min(...browserValues);
 const browserMaxValue = Math.max(...browserValues);
 
 const browserData = {
-  labels: [
-    `Chrome (${chromeData})`,
-    `Firefox (${firefoxData})`,
-    `Safari (${safariData})`,
-    `Edge (${edgeData})`,
-  ],
+  labels: [],
   datasets: [
     {
       label: "Web Browser Statistic",
@@ -108,57 +91,93 @@ const browserData = {
 };
 
 // Tooltip'i özelleştirme ayarları
-const options = {
+const getOptions = (activeTab: string) => ({
   plugins: {
     tooltip: {
       enabled: true,
-      backgroundColor: "#3b82f6", // Mavi arkaplan
-      titleColor: "#ffffff", // Beyaz başlık
+      backgroundColor: "#3b82f6",
+      titleColor: "#ffffff",
       titleFont: {
         size: 14,
-        weight: "bold",
+        weight: "bold" as const,
       },
-      bodyColor: "#ffffff", // Beyaz içerik
+      bodyColor: "#ffffff",
       bodyFont: {
         size: 12,
       },
-      padding: 10, // İç boşluk
-      cornerRadius: 8, // Baloncuk şekli için köşe yuvarlama
-      displayColors: false, // Renk kutucuğu gizlensin
-      borderColor: "#1e40af", // Daha koyu mavi kenar
+      padding: 10,
+      cornerRadius: 8,
+      displayColors: false,
+      borderColor: "#1e40af",
       borderWidth: 1,
       callbacks: {
-        label: function (tooltipItem) {
+        label: function (tooltipItem: { dataIndex: number; raw: number }) {
+          let labels: any[];
+          switch (activeTab) {
+            case "age":
+              labels = [
+                "0-12 yaş", "13-17 yaş", "18-24 yaş", "25-34 yaş",
+                "35-44 yaş", "45-54 yaş", "55-64 yaş", "64+ yaş"
+              ];
+              break;
+            case "devices":
+              labels = ["Mobil", "Masaüstü", "Tablet"];
+              break;
+            case "browser":
+              labels = ["Chrome", "Firefox", "Safari", "Edge"];
+              break;
+            default:
+              labels = [];
+          }
           const dataIndex = tooltipItem.dataIndex;
-          const label = tooltipItem.label.split(" (")[0]; // Yaş aralığı
-          const value = tooltipItem.raw; // Değer
+          const label = labels[dataIndex];
+          const value = tooltipItem.raw;
           return `${label}: ${value}`;
         },
       },
     },
   },
-};
+});
+
+interface HiddenStates {
+  age: boolean[];
+  devices: boolean[];
+  browser: boolean[];
+}
+
+type TabType = keyof HiddenStates;
 
 export default function Dashboard() {
-  const [activeTab, setActiveTab] = useState("age");
-  const chartRef = useRef(null); // Chart.js referansı
-  const [hiddenStates, setHiddenStates] = useState({
+  const [activeTab, setActiveTab] = useState<TabType>("age");
+  const chartRef = useRef<ChartJS<"doughnut", number[], string>>(null);
+  const [hiddenStates, setHiddenStates] = useState<HiddenStates>({
     age: Array(ageValues.length).fill(false),
     devices: Array(devicesValues.length).fill(false),
     browser: Array(browserValues.length).fill(false),
-  }); // Tıklanma durumunu takip ediyor
+  });
 
-  const toggleDatasetVisibility = (index) => {
+  const toggleDatasetVisibility = (index: number) => {
     if (chartRef.current) {
       const chart = chartRef.current;
-      const meta = chart.getDatasetMeta(0); // İlk veri seti
-      meta.data[index].hidden = !meta.data[index].hidden; // O veriyi gizle/aç
-      chart.update(); // Grafiği güncelle
+      const meta = chart.getDatasetMeta(0);
+      
+      // Görünürlük durumunu state'den kontrol edelim
+      const isCurrentlyHidden = hiddenStates[activeTab][index];
+      
+      // Veriyi gizle/göster
+      if (meta.data[index]) {
+        meta.data[index].hidden = !isCurrentlyHidden;
+        chart.update();
+      }
+      
+      // State'i güncelle
+      setHiddenStates(prev => ({
+        ...prev,
+        [activeTab]: prev[activeTab].map((hidden, i) => 
+          i === index ? !hidden : hidden
+        )
+      }));
     }
-    const updatedHiddenStates = { ...hiddenStates };
-    updatedHiddenStates[activeTab][index] =
-      !updatedHiddenStates[activeTab][index];
-    setHiddenStates(updatedHiddenStates);
   };
 
   const renderChartData = () => {
@@ -189,13 +208,31 @@ export default function Dashboard() {
 
   const renderLabels = () => {
     const currentData = renderChartData();
-    return currentData.labels.map((label, index) => (
+    let labels: (string | number | bigint | boolean | ReactElement<any, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<AwaitedReactNode> | null | undefined)[];
+    switch (activeTab) {
+      case "age":
+        labels = [
+          "0-12 yaş", "13-17 yaş", "18-24 yaş", "25-34 yaş",
+          "35-44 yaş", "45-54 yaş", "55-64 yaş", "64+ yaş"
+        ];
+        break;
+      case "devices":
+        labels = ["Mobil", "Masaüstü", "Tablet"];
+        break;
+      case "browser":
+        labels = ["Chrome", "Firefox", "Safari", "Edge"];
+        break;
+      default:
+        labels = [];
+    }
+
+    return currentData.datasets[0].data.map((value, index) => (
       <li
         key={index}
         className={`flex items-center justify-between text-lg cursor-pointer ${
-          hiddenStates[activeTab][index] ? "line-through text-gray-400" : ""
-        }`} // Gizlenen veriler çizilmiş ve gri olacak
-        onClick={() => toggleDatasetVisibility(index)} // Tıklama olayı
+          hiddenStates[activeTab][index] ? "line-through text-gray-200" : ""
+        }`}
+        onClick={() => toggleDatasetVisibility(index)}
       >
         <span className="flex items-center">
           <span
@@ -204,11 +241,9 @@ export default function Dashboard() {
               backgroundColor: currentData.datasets[0].backgroundColor[index],
             }}
           ></span>
-          {label.split(" (")[0]}{" "}
-          {/* Yaş grubu, cihaz ya da tarayıcı kısmını gösteriyoruz */}
+          {labels[index]}
         </span>
-        <span>{label.split("(")[1].replace(")", "")}</span>{" "}
-        {/* Sayıyı gösteriyoruz */}
+        <span>{value}</span>
       </li>
     ));
   };
@@ -218,9 +253,8 @@ export default function Dashboard() {
       {/* Üst kısımda logo, başlık ve ayar butonu */}
       <div className="flex justify-between w-full items-center mb-4">
         <div className="flex items-center">
-          <img src="/logo.png" alt="Logo" className="w-8 h-8 mr-2" />{" "}
-          {/* Logo */}
-          <h1 className="text-l font-bold">User Information Chart</h1>
+          <FiPieChart className="w-6 h-6 mr-2 text-gray-500" />
+          <h1 className="text-gray-600 text-l font-bold">User Information Chart</h1>
         </div>
         <div>
           <button className="text-gray-700">
@@ -237,54 +271,53 @@ export default function Dashboard() {
                 d="M12 6h.01M12 12h.01M12 18h.01"
               />
             </svg>
-          </button>{" "}
-          {/* Ayarlar butonu */}
+          </button>
         </div>
       </div>
 
       {/* Sekme bölümü */}
-      <div className="flex justify-start w-full mb-6">
-        <button
-          className={`px-4 py-2 text-sm font-semibold ${
-            activeTab === "age"
-              ? "bg-blue-500 text-white"
-              : "bg-white text-gray-700"
-          } rounded-l-md`}
-          onClick={() => setActiveTab("age")}
-        >
-          Age Statistic
-        </button>
-        <button
-          className={`px-4 py-2 text-sm font-semibold ${
-            activeTab === "devices"
-              ? "bg-blue-500 text-white"
-              : "bg-white text-gray-700"
-          }`}
-          onClick={() => setActiveTab("devices")}
-        >
-          Devices Statistic
-        </button>
-        <button
-          className={`px-4 py-2 text-sm font-semibold ${
-            activeTab === "browser"
-              ? "bg-blue-500 text-white"
-              : "bg-white text-gray-700"
-          } rounded-r-md`}
-          onClick={() => setActiveTab("browser")}
-        >
-          Web Browser Statistic
-        </button>
+      <div className="w-full mb-6">
+        <div className="inline-flex border border-gray-300 rounded-lg overflow-hidden">
+          <button
+            className={`px-4 py-2 text-sm font-medium ${
+              activeTab === "age"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
+            }`}
+            onClick={() => setActiveTab("age")}
+          >
+            Age Statistic
+          </button>
+          <button
+            className={`px-4 py-2 text-sm font-medium ${
+              activeTab === "devices"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
+            }`}
+            onClick={() => setActiveTab("devices")}
+          >
+            Devices Statistic
+          </button>
+          <button
+            className={`px-4 py-2 text-sm font-medium ${
+              activeTab === "browser"
+                ? "bg-blue-500 text-white"
+                : "bg-white text-gray-700"
+            }`}
+            onClick={() => setActiveTab("browser")}
+          >
+            Web Browser Statistic
+          </button>
+        </div>
       </div>
 
       <div className="flex flex-col lg:flex-row w-full max-w-5xl justify-between">
         {/* Grafik alanı sol tarafta */}
         <div className="w-full lg:w-2/3">
-          <div style={{ width: "500px", height: "500px", margin: "auto" }}>
-            {" "}
-            {/* Inline stil ile boyut belirliyoruz */}
+          <div style={{ width: "400px", height: "400px", margin: "auto" }}>
             <Doughnut
               data={renderChartData()}
-              options={options}
+              options={getOptions(activeTab)}
               ref={chartRef}
             />
           </div>
@@ -294,8 +327,7 @@ export default function Dashboard() {
         <div className="w-full lg:w-1/3 pl-8 flex flex-col justify-center space-y-2 mt-4 lg:mt-0">
           <h2 className="text-lg font-semibold mb-4">{renderChartTitle()}</h2>
           <ul className="text-gray-700 font-semibold space-y-2">
-            {renderLabels()}{" "}
-            {/* Sağdaki veri listesini dinamik olarak render ediyoruz */}
+            {renderLabels()}
           </ul>
         </div>
       </div>
