@@ -58,19 +58,19 @@ const UserStats = () => {
   const ranges = ["Total", "Today", "Last Week", "Last Month"];
 
   return (
-    <div className="py-2">
+    <div className="py-2 mx-1 md:mx-2 lg:mx-4 my-1  ">
       {/* Date Range Selection */}
-      <div className="flex flex-wrap justify-between items-center mb-4">
-        <div className="flex flex-wrap">
+      <div className="flex flex-wrap justify-around mb-2 items-center lg:justify-between lg:mb-4">
+        <div className="flex flex-wrap space-x-4 m:space-x-5 lg:space-x-6">
           {ranges.map((range) => (
             <button
               key={range}
-              className={`py-2 px-4 ${
+              className={`py-2 px-3 m:py-2 m:px-3 lg:py-1 lg:px-3 mb-2 lg:mb-3   ${
                 selectedRange === range
-                  ? "bg-gray-200 text-black font-semibold"
-                  : "text-gray-500 hover:bg-gray-100"
-              } rounded-lg border border-gray-300 transition-colors duration-200`}
-              onClick={() => setSelectedRange(range as RangeKey)} // String'i RangeKey tipine dönüştürüyoruz
+                  ? "bg-gray-200 text-black text-sm lg:text-lg  font-semibold"
+                  : "text-gray-500 text-sm lg:text-lg hover:bg-gray-100"
+              } rounded-md lg:rounded-xl border border-gray-300 transition-colors duration-200`}
+              onClick={() => setSelectedRange(range)} // Seçilen aralığa göre güncelle
             >
               {range}
             </button>
@@ -78,7 +78,7 @@ const UserStats = () => {
         </div>
         {/* Date Range Picker */}
         <button
-          className="text-gray-500 border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 mt-2 sm:mt-0"
+          className="text-gray-500 border border-gray-300 px-2 py-2 lg:px-4 lg:py-2 rounded-md lg:rounded-lg hover:bg-gray-100 mt-3 mb-3"
           style={{ color: "#65789A" }} // Date Range button rengini değiştirdik
         >
           Date Range
@@ -86,15 +86,15 @@ const UserStats = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 m:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 lg:gap-5">
         {stats.map((stat, index) => (
           <div
             key={index}
-            className="bg-white p-4 rounded-lg shadow-sm border border-gray-200"
+            className="bg-white p-3 lg:p-4 rounded-md lg:rounded-lg shadow lg:shadow-md border border-gray-200"
           >
             {/* Icon and More Options */}
-            <div className="flex justify-between items-center mb-4">
-              <div className="flex items-center space-x-2">
+            <div className="flex justify-between items-center mb-3 lg:mb-4">
+              <div className="flex items-center space-x-2 lg:space-x-3">
                 {stat.icon}
                 <span className="text-gray-500">
                   {stat.titles ? stat.titles[selectedRange] : stat.title}
@@ -106,11 +106,11 @@ const UserStats = () => {
             {/* Stats Value and Change */}
             {stat.ranges ? (
               <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold" style={{ color: "#323C4D" }}>
+                <h2 className="text-2xl lg:text-3xl font-bold" style={{ color: "#323C4D" }}>
                   {stat.ranges[selectedRange].value.toLocaleString()}
                 </h2>
                 <div
-                  className={`flex items-center space-x-1 text-sm rounded-lg px-2 py-1 border ${
+                  className={`flex  items-center space-x-1 lg:space-x-2 text-base lg:text-lg rounded-md lg:rounded-xl px-2 py-1 lg:px-3 lg:py-1 border ${
                     stat.ranges[selectedRange].increase
                       ? "text-green-500 bg-green-50 border-green-300"
                       : "text-red-500 bg-red-50 border-red-300"
@@ -126,11 +126,11 @@ const UserStats = () => {
               </div>
             ) : (
               <div className="flex justify-between items-center">
-                <h2 className="text-3xl font-bold" style={{ color: "#323C4D" }}>
+                <h2 className=" text-2xl lg:text-3xl font-bold" style={{ color: "#323C4D" }}>
                   {stat.value.toLocaleString()}
                 </h2>
                 <div
-                  className={`flex items-center space-x-1 text-sm rounded-lg px-2 py-1 border ${
+                  className={`flex items-center space-x-1 lg:space-x-2 text-base lg:text-lg rounded-md lg:rounded-xl px-2 py-1 lg:px-3 lg:py-1 border ${
                     stat.increase
                       ? "text-green-500 bg-green-50 border-green-300"
                       : "text-red-500 bg-red-50 border-red-300"
