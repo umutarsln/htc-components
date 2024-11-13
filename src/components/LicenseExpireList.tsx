@@ -13,20 +13,20 @@ const users = [
 
 const LicenseExpireList = () => {
   return (
-    <div className="w-full lg:w-7/8 p-4 bg-white rounded-lg shadow-md mt-4 lg:mt-0">
-      <h2 className="w-full text-lg font-semibold mb-4">License Expire List</h2>
-      <ul className="space-y-4">
+    <div className="w-full lg:h-full lg:p-4 p-5 rounded-lg lg:rounded-xl lg:shadow-lg shadow-xl">
+      <h2 className="w-full lg:text-lg text-xl text-black font-semibold mb-4">License Expire List</h2>
+      <ul className="space-y-[17px]">
         {users.map((user, index) => (
           <li key={index} className="flex justify-between items-center">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-1">
               <img
                 src={user.image}
                 alt={user.name}
                 className="w-10 h-10 rounded-full object-cover"
               />
               <div>
-                <p className="font-semibold">{user.name}</p>
-                <p className="text-gray-500 text-sm">{user.daysLeft} Days Left</p>
+                <p className="font-semibold lg:text-base text-xl text-black">{user.name}</p>
+                <p className="text-gray-500 lg:text-sm text-base">{user.daysLeft} Days Left</p>
               </div>
             </div>
             <span className={`w-5 h-3 rounded-full ${user.color}`} />

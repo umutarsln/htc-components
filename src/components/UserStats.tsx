@@ -56,7 +56,7 @@ const UserStats = () => {
   const ranges = ["Total", "Today", "Last Week", "Last Month"];
 
   return (
-    <div className="py-2 mx-1 md:mx-2 lg:mx-4 my-1  ">
+    <div className="py-2 mx-1  my-1  ">
       {/* Date Range Selection */}
       <div className="flex flex-wrap justify-around mb-2 items-center lg:justify-between lg:mb-4">
         <div className="flex flex-wrap space-x-4 m:space-x-5 lg:space-x-6">

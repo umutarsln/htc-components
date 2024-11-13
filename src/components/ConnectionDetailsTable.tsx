@@ -86,34 +86,21 @@ const ConnectionDetailsTable: React.FC = () => {
   };
 
   return (
-    <div className="mt-8 p-4 bg-white shadow-md rounded-lg border border-gray-200"> {/* En dış çerçeve rengini açtık */}
+    <div className="mt-4 p-4 bg-white shadow-md w-full rounded-lg border border-gray-200">
       <div className="flex justify-between items-center mb-4">
         <div className="flex items-center">
           <h2 className="text-md font-semibold">Current Connections</h2>
-          <div className="bg-blue-200 text-blue-900 px-2 py-1 rounded-md font-bold ml-2">
-            55
-          </div> {/* Random number in blue box */}
+          <div className="bg-blue-200 text-blue-900 px-2 py-1 rounded-md font-bold ml-2">55</div>
         </div>
         <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200">
           See All Connections
         </button>
       </div>
-      <div style={{ overflowX: "auto", width: "100%" }}>
-        <table
-          className="min-w-full bg-white border-collapse border border-gray-200"
-          style={{
-            borderRadius: "8px",
-            tableLayout: "fixed",
-          }}
-        >
-          <thead>
-            <tr
-              className="bg-gray-100 text-gray-500"
-              style={{
-                fontSize: "14px",
-                textAlign: "left",
-              }}
-            >
+
+      <div className="overflow-x-auto w-full max-w-full">
+        <table className="w-full bg-white border-collapse border border-gray-200 rounded-lg">
+          <thead className="bg-gray-200 text-gray-700">
+            <tr className="text-left text-sm">
               {[
                 { label: "Room", field: "room" },
                 { label: "IP Address", field: "ipAddress" },
@@ -123,53 +110,26 @@ const ConnectionDetailsTable: React.FC = () => {
                 { label: "Date", field: "date" },
                 { label: "Birthday", field: "birthday" },
               ].map(({ label, field }) => (
-                <th
-                  key={field}
-                  style={{
-                    padding: "10px",
-                    width: columnWidths[field as keyof typeof columnWidths],
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
+                <th key={field} className="px-4 py-2 text-center">
                   {label}
                 </th>
               ))}
-              <th style={{ padding: "10px", textAlign: "center" }}>Actions</th>
+              <th className="px-4 py-2 text-center">Actions</th>
             </tr>
           </thead>
-          <tbody className="text-gray-500">
+          <tbody className="text-gray-600">
             {data.map((item, index) => (
-              <tr
-                key={index}
-                className="hover:bg-gray-100 transition duration-150"
-                style={{ borderBottom: "1px solid #e2e8f0" }}
-              >
-                <td style={{ padding: "10px", width: columnWidths.room }}>
-                  {item.room}
-                </td>
-                <td style={{ padding: "10px", width: columnWidths.ipAddress }}>
-                  {item.ipAddress}
-                </td>
-                <td style={{ padding: "10px", width: columnWidths.macAddress }}>
-                  {item.macAddress}
-                </td>
-                <td style={{ padding: "10px", width: columnWidths.fullName }}>
-                  {item.fullName}
-                </td>
-                <td style={{ padding: "10px", width: columnWidths.email }}>
-                  {item.email}
-                </td>
-                <td style={{ padding: "10px", width: columnWidths.date }}>
-                  {item.date}
-                </td>
-                <td style={{ padding: "10px", width: columnWidths.birthday }}>
-                  {item.birthday}
-                </td>
-                <td style={{ padding: "10px", textAlign: "center" }}>
-                  <button >
-                    <FaEllipsisV  />
+              <tr key={index} className="hover:bg-gray-100 transition duration-150 border-b border-gray-200">
+                <td className="px-4 py-2">{item.room}</td>
+                <td className="px-4 py-2">{item.ipAddress}</td>
+                <td className="px-4 py-2">{item.macAddress}</td>
+                <td className="px-4 py-2">{item.fullName}</td>
+                <td className="px-4 py-2">{item.email}</td>
+                <td className="px-4 py-2">{item.date}</td>
+                <td className="px-4 py-2">{item.birthday}</td>
+                <td className="px-4 py-2 text-center">
+                  <button title="More options" className="hover:text-blue-500">
+                    <FaEllipsisV />
                   </button>
                 </td>
               </tr>
@@ -178,6 +138,8 @@ const ConnectionDetailsTable: React.FC = () => {
         </table>
       </div>
     </div>
+
+
   );
 };
 

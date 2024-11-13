@@ -192,14 +192,14 @@ export default function Dashboard() {
     return currentData.labels.map((label, index) => (
       <li
         key={index}
-        className={`flex items-center justify-between text-lg cursor-pointer ${
+        className={`flex items-center justify-between lg:text-base text-xl cursor-pointer mx-1 md:mx-2 lg:mx-4 my-1 ${
           hiddenStates[activeTab][index] ? "line-through text-gray-400" : ""
         }`} // Gizlenen veriler çizilmiş ve gri olacak
         onClick={() => toggleDatasetVisibility(index)} // Tıklama olayı
       >
         <span className="flex items-center">
           <span
-            className="w-3 h-3 rounded-full mr-2"
+            className="lg:w-2 lg:h-2 w-3 h-3 rounded-full lg:mr-2 mr-3"
             style={{
               backgroundColor: currentData.datasets[0].backgroundColor[index],
             }}
@@ -214,18 +214,18 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center w-full p-4 bg-white rounded-lg shadow-md">
+    <div className="flex flex-col items-center  justify-center items-center w-full p-4 lg:p-5 mx-1 my-1 bg-white lg:rounded-xl rounded-lg shadow-xl lg:shadow-lg">
       {/* Üst kısımda logo, başlık ve ayar butonu */}
-      <div className="flex justify-between w-full items-center mb-4">
+      <div className="flex justify-between w-full  items-center mb-3 lg:mb-4">
         <div className="flex items-center">
           <img src="/logo.png" alt="Logo" className="w-8 h-8 mr-2" />{" "}
           {/* Logo */}
-          <h1 className="text-l font-bold">User Information Chart</h1>
+          <h1 className="text-lg lg:text-xl text-black font-bold ">User Information Chart</h1>
         </div>
         <div>
           <button className="text-gray-700">
             <svg
-              className="w-6 h-6"
+              className="lg:w-5 lg:h-5  w-5 h-5 "
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -243,11 +243,11 @@ export default function Dashboard() {
       </div>
 
       {/* Sekme bölümü */}
-      <div className="flex justify-start w-full mb-6">
+      <div className="flex justify-between lg:justify-around w-full mb-6">
         <button
-          className={`px-4 py-2 text-sm font-semibold ${
+          className={` px-2 py-1 lg:px-4 lg:py-2 text-base lg:text-sm font-semibold ${
             activeTab === "age"
-              ? "bg-blue-500 text-white"
+              ? "bg-blue-500 text-white rounded-md lg:rounded-lg "
               : "bg-white text-gray-700"
           } rounded-l-md`}
           onClick={() => setActiveTab("age")}
@@ -255,9 +255,9 @@ export default function Dashboard() {
           Age Statistic
         </button>
         <button
-          className={`px-4 py-2 text-sm font-semibold ${
+          className={`px-2 py-1 lg:px-4 lg:py-2 text-base lg:text-sm font-semibold ${
             activeTab === "devices"
-              ? "bg-blue-500 text-white"
+              ? "bg-blue-500 text-white rounded-md lg:rounded-lg"
               : "bg-white text-gray-700"
           }`}
           onClick={() => setActiveTab("devices")}
@@ -265,9 +265,9 @@ export default function Dashboard() {
           Devices Statistic
         </button>
         <button
-          className={`px-4 py-2 text-sm font-semibold ${
+          className={`px-2 py-1 lg:px-4 lg:py-2 text-base lg:text-sm font-semibold ${
             activeTab === "browser"
-              ? "bg-blue-500 text-white"
+              ? "bg-blue-500 text-white rounded-md lg:rounded-lg"
               : "bg-white text-gray-700"
           } rounded-r-md`}
           onClick={() => setActiveTab("browser")}
@@ -276,10 +276,10 @@ export default function Dashboard() {
         </button>
       </div>
 
-      <div className="flex flex-col lg:flex-row w-full max-w-5xl justify-between">
+      <div className="flex flex-col lg:flex-row w-full items-center justify-start lg:justify-between">
         {/* Grafik alanı sol tarafta */}
-        <div className="w-full lg:w-2/3">
-          <div style={{ width: "500px", height: "500px", margin: "auto" }}>
+        <div className="w-full lg:w-1/3 justify-center items-center">
+          <div style={{ width: "500px", height: "400px",  }   }>
             {" "}
             {/* Inline stil ile boyut belirliyoruz */}
             <Doughnut
@@ -291,9 +291,9 @@ export default function Dashboard() {
         </div>
 
         {/* Veri listesi sağda */}
-        <div className="w-full lg:w-1/3 pl-8 flex flex-col justify-center space-y-2 mt-4 lg:mt-0">
-          <h2 className="text-lg font-semibold mb-4">{renderChartTitle()}</h2>
-          <ul className="text-gray-700 font-semibold space-y-2">
+        <div className="w-full lg:w-1/3 pt-1 lg:pl-8 flex flex-col justify-center space-y-2 lg:space-y-1 lg:mt-1 mt-4">
+          <h2 className="lg:text-base text-black font-semibold mb-3 lg:mb-2">{renderChartTitle()}</h2>
+          <ul className="text-gray-700 font-semibold space-y-3">
             {renderLabels()}{" "}
             {/* Sağdaki veri listesini dinamik olarak render ediyoruz */}
           </ul>

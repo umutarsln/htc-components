@@ -24,37 +24,37 @@ const HomePage = () => {
       <UserStats /> {/* Kullanıcı istatistiklerini gösteren kısım  */}
 
       {/* Flexbox ile layout'u responsive yapıyoruz */}
-      <div className="flex flex-col lg:flex-row justify-between space-y-4 lg:space-y-0 lg:space-x-4">
+      <div className="flex flex-col lg:flex-row justify-between space-y-4 lg:space-y-1 lg:space-x-5">
         {/* Sol tarafta StatisticChart */}
-        <div className="w-full lg:w-3/4">
+        <div className="w-full lg:w-1/2 h-full">
           <StatisticChart />
-        </div> 
+        </div>
 
         {/* Sağ tarafta LicenseExpireList */}
-        <div className="w-full lg:w-1/4">
+        <div className="w-full lg:w-1/2 h-full">
           <LicenseExpireList />
-        </div> 
+        </div>
       </div>
 
-      <div>
+      <div className="flex flex-col w-[600px] h-full lg:w-full lg:h-full">
         <ConnectionDetailsTable />
       </div> 
-       <div>
+      {/* <div>
         <CurrentLogsTable />
-      </div> 
-      
+      </div> */}
+
       {/* GuestTrafficChart ve GuestMonitoring'i düzenliyoruz */}
-       <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mt-4">
-        <div className="w-full lg:w-2/3">
+      <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mt-4">
+        {/* <div className="w-full lg:w-2/3">
           <GuestTrafficChart />
-        </div>
-        <div className="w-full lg:w-1/3">
+        </div> */}
+        {/* <div className="w-full lg:w-1/3">
           <GuestMonitoring />
-        </div>
-      </div> 
-      <div>
+        </div> */}
+      </div>
+      {/* <div>
         <PackageDetailsBottom />
-      </div> 
+      </div> */}
     </div>
   );
 };
