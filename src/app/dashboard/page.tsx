@@ -36,25 +36,25 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="flex flex-col w-[600px] h-full lg:w-full lg:h-full">
+      <div className="flex flex-col w-[600px] h-full lg:w-full ">
         <ConnectionDetailsTable />
       </div> 
-      {/* <div>
+      <div className="flex flex-col w-[600px] h-full lg:w-full ">
         <CurrentLogsTable />
-      </div> */}
+      </div> 
 
-      {/* GuestTrafficChart ve GuestMonitoring'i düzenliyoruz */}
+      
       <div className="flex flex-col lg:flex-row space-y-4 lg:space-y-0 lg:space-x-4 mt-4">
-        {/* <div className="w-full lg:w-2/3">
+        <div className="w-full lg:w-2/3">
           <GuestTrafficChart />
-        </div> */}
-        {/* <div className="w-full lg:w-1/3">
+        </div>
+        <div className="w-full lg:w-1/3">
           <GuestMonitoring />
-        </div> */}
+        </div>
       </div>
-      {/* <div>
+      <div>
         <PackageDetailsBottom />
-      </div> */}
+      </div> 
     </div>
   );
 };

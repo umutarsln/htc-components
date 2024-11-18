@@ -55,15 +55,15 @@ const CurrentLogsTable: React.FC = () => {
   };
 
   return (
-    <div className="mt-8 p-4 bg-white shadow-md rounded-lg border border-gray-200">
-      <div className="flex justify-between items-center mb-4">
+    <div className="mt-4 p-4 lg:mt-4 lg:p-4 w-full bg-white shadow-md lg:shadow-lg rounded-lg lg:rounded-md border border-gray-200">
+      <div className="flex justify-between items-center mb-2 lg:mb-4">
         <div className="flex items-center">
-          <h2 className="text-md font-semibold">Current Logs</h2>
-          <div className="bg-blue-200 text-blue-900 px-2 py-1 rounded-md font-bold ml-2">
+          <h2 className="text-lg lg:text-base font-semibold">Current Logs</h2>
+          <div className="bg-blue-200 text-blue-900 px-2 py-1 lg:px-3 lg:py-1 rounded-lg lg:rounded-md font-bold ml-2">
             {randomNumber}
           </div> {/* Random number in blue box */}
         </div>
-        <button className="border border-gray-300 text-gray-600 px-4 py-2 rounded-md hover:bg-gray-100 transition duration-200">
+        <button className="mb-3 lg:mb-1 border border-gray-300 text-gray-600 px-4 py-3 lg:px-4 lg:py-2 lg:rounded-md rounded-lg hover:bg-gray-100 transition duration-200">
           See All Connections
         </button>
       </div>
